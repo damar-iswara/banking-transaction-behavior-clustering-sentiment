@@ -5,7 +5,7 @@ This project is the final submission for the Clustering module in the Belajar Ma
 The notebook applies unsupervised learning using the K-Means algorithm to group transaction data based on user behavior patterns.
 The main objective is to discover meaningful insights and detect potential anomalies that could be useful for fraud detection and customer segmentation.
 
-*Import Libraries & Dataset Initialization*
+## Import Libraries & Dataset Initialization
 ```python
 import joblib
 import numpy as np
@@ -26,22 +26,22 @@ from yellowbrick.cluster import KElbowVisualizer
 - **MinMaxScaler, LabelEncoder**: preprocessing tools to normalize and encode data.
 - **Silhouette Score & KElbowVisualizer**: model evaluation metrics and visualization.
 
-*Exploratory Data Analysis (EDA)*
+## Exploratory Data Analysis (EDA)
 EDA is performed to understand the relationships between features and identify which attributes are most relevant for clustering.
 - The features customerage and accountbalance show the strongest positive correlation of 0.321.
 - These two features were selected as the primary variables for the clustering process.
 <img width="1099" height="834" alt="download" src="https://github.com/user-attachments/assets/bede7e51-69b6-414a-9904-419b8c134349" />
 
-*Data Preprocessing*
+## Data Preprocessing
 The preprocessing phase ensures the dataset is clean and ready for clustering.
 1. Normalization
-   Applied MinMaxScaler to rescale all numeric features into a uniform range of [0, 1].
+   - Applied MinMaxScaler to rescale all numeric features into a uniform range of [0, 1].
    ```python
     scaler = MinMaxScaler()
     num_columns = df.select_dtypes(include=['int64', 'float64']).columns.tolist()
     df[num_columns] = scaler.fit_transform(df[num_columns])
    ```
-3. Categorical Encoding
+2. Categorical Encoding
    - Identified non-date object columns.
    - Replaced empty strings and missing values with the mode.
    - Encoded categorical data using LabelEncoder.
@@ -49,7 +49,22 @@ The preprocessing phase ensures the dataset is clean and ready for clustering.
       encoder = LabelEncoder()
       df[col] = encoder.fit_transform(df[col])
      ```
-4. Missing Values & Duplicates Handling
+3. Missing Values & Duplicates Handling
    - Filled missing numeric values with mean.
    - Filled missing categorical values with mode.
    - Removed duplicate records using df.drop_duplicates(inplace=True).
+
+## Clustering (K-Means)
+The K-Means algorithm was applied to group the data into clusters based on customer age and account balance.
+The optimal number of clusters (k) was determined using the Elbow Method, while the Silhouette Score was used to evaluate clustering quality.
+The clustering results were assessed through two primary methods:
+*Elbow Method*: to determine the optimal number of clusters (k).
+*Silhouette Score*: to evaluate how well data points fit within their clusters.
+| Metric           | Model       | Value      |
+| :--------------- | :---------- | :--------- |
+| Optimal k        | K-Means     | **3**      |
+| Silhouette Score | K-Means     | **0.4887** |
+| Silhouette Score | PCA-reduced | **0.438**  |
+- The Elbow Method indicates that 3 clusters provide the most balanced grouping.
+- A Silhouette Score of 0.4887 suggests moderately distinct clusters — the groups are separated enough to provide meaningful insights.
+- After applying Principal Component Analysis (PCA) for visualization, the score slightly decreases to 0.438, indicating that dimensionality reduction slightly reduces separation but still preserves the cluster structure.
